@@ -1,0 +1,22 @@
+# Node modules (frontend dependencies)
+node_modules/
+
+# Python envs
+venv/
+.env
+
+# Bytecode
+__pycache__/
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+
+# IDE
+.vscode/
+
+# Build folders
+dist/
+build/
