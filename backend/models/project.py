@@ -44,6 +44,13 @@ class Project(SQLModel, table=True):
     start_date: Optional[datetime] = None
     completion_date: Optional[datetime] = None
 
+    # ✅ Provenance (data origin)
+    # True = seeded/mock/demo rows, False = imported/real rows
+    is_mock: bool = Field(default=True, index=True)
+    source_name: Optional[str] = Field(default=None, max_length=120, index=True)
+    source_url: Optional[str] = Field(default=None, max_length=500)
+    source_doc_ref: Optional[str] = Field(default=None, max_length=120)
+
     # One-to-one procurement award (optional)
     procurement_award: Optional["ProcurementAward"] = Relationship(
         back_populates="project",

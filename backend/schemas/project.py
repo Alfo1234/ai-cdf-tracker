@@ -30,3 +30,9 @@ class ProjectReadWithConstituency(SQLModel):
     start_date: Optional[datetime] = None
     completion_date: Optional[datetime] = None
     last_updated: Optional[datetime] = None
+
+    # ✅ Provenance fields (API now returns them)
+    is_mock: bool
+    source_name: Optional[str] = None
+    source_url: Optional[str] = None
+    source_doc_ref: Optional[str] = None

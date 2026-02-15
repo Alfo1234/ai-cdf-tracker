@@ -67,7 +67,6 @@ def _to_dt(v: Optional[str]) -> Optional[datetime]:
 def seed_data():
     with Session(engine) as session:
         # 1) Clear existing data (order matters because of FK constraints)
-        # ✅ FIX: Replace session.query(...).delete() with session.exec(delete(...))
         session.exec(delete(ProcurementAward))
         session.exec(delete(Contractor))
         session.exec(delete(Project))
@@ -92,6 +91,12 @@ def seed_data():
                 constituency_code=p["constituency_code"],
                 start_date=_to_dt(p["start_date"]),
                 completion_date=_to_dt(p["completion_date"]),
+
+                # ✅ Provenance for seed/demo data
+                is_mock=True,
+                source_name="Seed Data",
+                source_url=None,
+                source_doc_ref="seed_data.py",
             )
             session.add(project)
             created_projects.append(project)
@@ -122,7 +127,6 @@ def seed_data():
 
         # 5) Add procurement awards
         awards = [
-            # AquaDrill repeats in Water projects (creates future “same contractor dominance” signal)
             ProcurementAward(
                 project_id=get_project_by_title("Nguni Borehole Rehabilitation").id,
                 contractor_id=contractors[0].id,
@@ -149,8 +153,6 @@ def seed_data():
                 contract_value=2800000,
                 award_date=date(2025, 2, 20),
             ),
-
-            # Mavuno repeats in construction/health
             ProcurementAward(
                 project_id=get_project_by_title("Kajiado North Classroom Block").id,
                 contractor_id=contractors[1].id,
@@ -167,8 +169,6 @@ def seed_data():
                 contract_value=4100000,
                 award_date=date(2025, 3, 15),
             ),
-
-            # Nuru in environment
             ProcurementAward(
                 project_id=get_project_by_title("Kisumu East Solar Lighting").id,
                 contractor_id=contractors[2].id,
@@ -187,8 +187,6 @@ def seed_data():
                 performance_flag=True,
                 performance_flag_reason="Direct procurement used repeatedly by same contractor in same FY (seeded demo signal).",
             ),
-
-            # Kibo
             ProcurementAward(
                 project_id=get_project_by_title("Kajiado Central Police Post Construction").id,
                 contractor_id=contractors[3].id,
