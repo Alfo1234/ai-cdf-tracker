@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "score_name": "Data Confidence Score",
+  "range": [0, 100],
+  "weights": {
+    "completeness": 50,
+    "freshness": 35,
+    "consistency": 15
+  },
+  "completeness": {
+    "required_list_fields": [
+      "list_level.project_title",
+      "list_level.status",
+      "list_level.financial_year",
+      "source.detail_page_url",
+      "list_level.uploaded_date_raw"
+    ],
+    "optional_bonus_fields": [
+      "source.project_image_url",
+      "list_level.uploaded_date_iso",
+      "detail_level.description",
+      "detail_level.sector",
+      "detail_level.location.ward",
+      "detail_level.budget.amount_raw",
+      "detail_level.contractor.name",
+      "detail_level.gallery_image_urls"
+    ],
+    "rule": "completeness_pct = 100 * (filled_required / total_required) + bonus where each optional filled adds +2, capped at 100"
+  },
+  "freshness": {
+    "rule": "freshness_days = days_between(today, max(uploaded_date_iso if exists else uploaded_date_raw_parsed))",
+    "mapping": [
+      { "max_days": 90, "freshness_score": 100 },
+      { "max_days": 180, "freshness_score": 85 },
+      { "max_days": 365, "freshness_score": 65 },
+      { "max_days": 730, "freshness_score": 40 },
+      { "max_days": 3650, "freshness_score": 20 },
+      { "max_days": 999999, "freshness_score": 10 }
+    ]
+  },
+  "consistency": {
+    "checks": [
+      {
+        "name": "financial_year_format",
+        "rule": "financial_year matches one of: 'YYYY/YYYY' or 'FY YYYY/YYYY' or 'YYYY-YYYY'",
+        "pass_score": 100,
+        "fail_score": 50,
+        "issue_on_fail": "financial_year_format_invalid"
+      },
+      {
+        "name": "status_present",
+        "rule": "status is not null/empty",
+        "pass_score": 100,
+        "fail_score": 60,
+        "issue_on_fail": "status_missing"
+      },
+      {
+        "name": "detail_link_present",
+        "rule": "detail_page_url is not null/empty",
+        "pass_score": 100,
+        "fail_score": 40,
+        "issue_on_fail": "detail_page_missing"
+      }
+    ],
+    "rule": "consistency_score = average(check_scores)"
+  },
+  "final_score": {
+    "rule": "data_confidence_score = round((completeness_pct*0.50) + (freshness_score*0.35) + (consistency_score*0.15))",
+    "levels": [
+      { "min": 80, "level": "High" },
+      { "min": 55, "level": "Medium" },
+      { "min": 0, "level": "Low" }
+    ]
+  }
+}

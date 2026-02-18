@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "source_system": "ng-cdf-portal",
+  "base_url": "https://ngcdf.go.ke",
+  "pilot_sample_note": "Pilot national sample: urban, peri-urban, rural, coast, north/east coverage for governance-grade extraction.",
+  "constituencies": [
+    { "name": "Kiharu", "slug": "kiharu" },
+    { "name": "Embakasi East", "slug": "embakasi-east" },
+    { "name": "Starehe", "slug": "starehe" },
+    { "name": "Kasarani", "slug": "kasarani" },
+    { "name": "Kajiado Central", "slug": "kajiado-central" },
+    { "name": "Yatta", "slug": "yatta" },
+    { "name": "Malava", "slug": "malava" },
+    { "name": "Garissa Township", "slug": "garissa-township" },
+    { "name": "Nyali", "slug": "nyali" },
+    { "name": "Kapseret", "slug": "kapseret" }
+  ]
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-cdf-tracker.local/schemas/ngcdf/project_record.schema.json",
+  "title": "NG-CDF Project Record (Governance-Grade Canonical Contract)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "source",
+    "constituency",
+    "list_level",
+    "scrape_meta"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "description": "Deterministic ID for deduping across runs. Example: sha256(constituency_slug + '|' + detail_page_url OR title+fy+uploaded_date)."
+    },
+
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_system", "base_url"],
+      "properties": {
+        "source_system": { "type": "string", "const": "ng-cdf-portal" },
+        "base_url": { "type": "string" },
+        "list_page_url": { "type": ["string", "null"] },
+        "detail_page_url": { "type": ["string", "null"] },
+        "project_image_url": { "type": ["string", "null"] }
+      }
+    },
+
+    "constituency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "slug"],
+      "properties": {
+        "name": { "type": "string" },
+        "slug": { "type": "string" }
+      }
+    },
+
+    "list_level": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["project_title"],
+      "properties": {
+        "project_title": { "type": "string" },
+        "status": { "type": ["string", "null"] },
+        "financial_year": { "type": ["string", "null"] },
+        "uploaded_date_raw": {
+          "type": ["string", "null"],
+          "description": "Raw text like 'Uploaded on ...' as seen on page."
+        },
+        "uploaded_date_iso": {
+          "type": ["string", "null"],
+          "description": "Normalized ISO date (YYYY-MM-DD) if parsing succeeds."
+        }
+      }
+    },
+
+    "detail_level": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": ["string", "null"] },
+
+        "location": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "ward": { "type": ["string", "null"] },
+            "institution": { "type": ["string", "null"] },
+            "village": { "type": ["string", "null"] },
+            "notes": { "type": ["string", "null"] }
+          }
+        },
+
+        "sector": { "type": ["string", "null"] },
+
+        "budget": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "amount_raw": { "type": ["string", "null"] },
+            "currency": { "type": ["string", "null"], "default": "KES" },
+            "amount_value": {
+              "type": ["number", "null"],
+              "description": "Parsed numeric amount if extraction + cleaning succeeds."
+            }
+          }
+        },
+
+        "contractor": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": { "type": ["string", "null"] },
+            "name_raw": { "type": ["string", "null"] }
+          }
+        },
+
+        "gallery_image_urls": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      }
+    },
+
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "completeness_pct": { "type": ["number", "null"] },
+        "freshness_days": { "type": ["number", "null"] },
+        "consistency_score": { "type": ["number", "null"] },
+        "data_confidence_score": { "type": ["number", "null"] },
+        "confidence_level": {
+          "type": ["string", "null"],
+          "enum": ["High", "Medium", "Low", null]
+        },
+        "issues": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": []
+        }
+      }
+    },
+
+    "scrape_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["scraped_at_iso"],
+      "properties": {
+        "scraped_at_iso": { "type": "string", "description": "ISO datetime of extraction run." },
+        "extractor_version": { "type": ["string", "null"] },
+        "raw_html_paths": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "list_page_html": { "type": ["string", "null"] },
+            "detail_page_html": { "type": ["string", "null"] }
+          }
+        }
+      }
+    }
+  }
+}
