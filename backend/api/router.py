@@ -8,6 +8,7 @@ from .project_image_router import router as project_image_router
 from .procurement_award_router import router as procurement_award_router
 from .contractor_router import router as contractor_router
 from .users_router import router as users_router
+from .ai_signals_router import router as ai_signals_router
 
 
 
@@ -29,3 +30,4 @@ router.include_router(project_image_router)
 router.include_router(procurement_award_router)
 router.include_router(contractor_router)
 router.include_router(users_router)
+router.include_router(ai_signals_router)
